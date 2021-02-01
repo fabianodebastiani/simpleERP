@@ -14,6 +14,11 @@
 
 import os
 import sqlite3
+import tabelas as tb
+
+
+# Arquivo da base de dados
+dataBase = 'assistente.db'
 
 
 # Captura diretório de execução do aplicativo
@@ -22,5 +27,10 @@ diretorioDeExecucao = os.getcwd()
 
 # Verifica ou cria arquivo de data base e fecha conexão
 
-conn = sqlite3.connect("assistente.db") # ou use :memory: para botá-lo na memória RAM
+conn = sqlite3.connect(dataBase) # ou use :memory: para botá-lo na memória RAM
 conn.close()
+
+# Para cada tabela da base de dados, verifica existencia ou cria
+
+for i in tb.tabelasACriar:
+    tb.criaTabela(dataBase, i)
