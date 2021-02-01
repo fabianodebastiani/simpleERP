@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 
-#MostSimpleFunctionaliry
+#Master
 
 import init
