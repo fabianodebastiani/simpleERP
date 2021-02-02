@@ -15,6 +15,7 @@
 import os
 import sqlite3
 import tabelas as tb
+import dbFunctions as dbf
 
 
 # Arquivo da base de dados
@@ -33,4 +34,4 @@ conn.close()
 # Para cada tabela da base de dados, verifica existencia ou cria
 
 for i in tb.tabelasACriar:
-    tb.criaTabela(dataBase, i)
+    dbf.criaTabela(dataBase, i)
