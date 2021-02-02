@@ -11,41 +11,52 @@ notasJson = {'nome': 'notas', 'campos': [
     {'nome': 'versao', 'tipo': 'text'},
     {'nome': 'serie', 'tipo': 'text'},
     {'nome': 'nota', 'tipo': 'text'},
-    {'nome': 'emissao', 'tipo': 'text'},
-    {'nome': 'lancamento', 'tipo': 'text'},
+    {'nome': 'serieNota', 'tipo': 'text'},
+    {'nome': 'emissaoTimeStamp', 'tipo': 'integer'},
+    {'nome': 'lancamentoTimeStamp', 'tipo': 'integer'},
     {'nome': 'natureza', 'tipo': 'text'},
-    {'nome': 'icms', 'tipo': 'real'},
-    {'nome': 'icmsst', 'tipo': 'real'},
+    {'nome': 'ICMS', 'tipo': 'real'},
+    {'nome': 'ICMSST', 'tipo': 'real'},
     {'nome': 'valorDosProdutos', 'tipo': 'real'},
-    {'nome': 'ipi', 'tipo': 'real'},
-    {'nome': 'pis', 'tipo': 'real'},
-    {'nome': 'cofins', 'tipo': 'real'},
-    {'nome': 'valorDaNota', 'tipo': 'real'},
-    {'nome': 'itens', 'tipo': 'integer'},
-    {'nome': 'quantidade', 'tipo': 'integer'}
-]}
-
-notasLinxJson = {'nome': 'notasLinx', 'campos': [
-    {'nome': 'id', 'tipo': 'text'}, 
-    {'nome': 'versao', 'tipo': 'text'},
-    {'nome': 'serie', 'tipo': 'text'},
-    {'nome': 'nota', 'tipo': 'text'},
-    {'nome': 'emissao', 'tipo': 'text'},
-    {'nome': 'lancamento', 'tipo': 'text'},
-    {'nome': 'natureza', 'tipo': 'text'},
-    {'nome': 'icms', 'tipo': 'real'},
-    {'nome': 'icmsst', 'tipo': 'real'},
-    {'nome': 'valorDosProdutos', 'tipo': 'real'},
-    {'nome': 'ipi', 'tipo': 'real'},
-    {'nome': 'pis', 'tipo': 'real'},
-    {'nome': 'cofins', 'tipo': 'real'},
+    {'nome': 'IPI', 'tipo': 'real'},
+    {'nome': 'PIS', 'tipo': 'real'},
+    {'nome': 'COFINS', 'tipo': 'real'},
     {'nome': 'valorDaNota', 'tipo': 'real'},
     {'nome': 'itens', 'tipo': 'integer'},
     {'nome': 'quantidade', 'tipo': 'integer'}
 ]}
 
 
-tabelasACriar = [notasJson, notasLinxJson]
+
+
+produtosNotasJson = {'nome': 'produtosNotas', 'campos': [
+    {'nome': 'id', 'tipo': 'text'},
+    {'nome': 'item', 'tipo': 'text'}, 
+    {'nome': 'codigo', 'tipo': 'text'},
+    {'nome': 'barras', 'tipo': 'text'},
+    {'nome': 'descricao', 'tipo': 'text'},
+    {'nome': 'quantidade', 'tipo': 'integer'},
+    {'nome': 'valorUnitarioSemImpostos', 'tipo': 'real'},
+    {'nome': 'valorTotalSemImpostos', 'tipo': 'real'},
+    {'nome': 'pedido', 'tipo': 'text'},
+    {'nome': 'aliquotaIPI', 'tipo': 'real'},
+    {'nome': 'IPI', 'tipo': 'real'},
+    {'nome': 'aliquotaPIS', 'tipo': 'real'},
+    {'nome': 'PIS', 'tipo': 'real'},
+    {'nome': 'aliquotaCOFINS', 'tipo': 'real'},
+    {'nome': 'COFINS', 'tipo': 'real'},
+    {'nome': 'aliquotaICMS', 'tipo': 'real'},
+    {'nome': 'ICMS', 'tipo': 'real'},
+    {'nome': 'aliquotaICMSST', 'tipo': 'real'},
+    {'nome': 'ICMSST', 'tipo': 'real'},
+    {'nome': 'valorTotalComImpostos', 'tipo': 'real'}
+]}
+
+
+
+
+
+tabelasACriar = [notasJson, produtosNotasJson]
 
 
 
