@@ -38,6 +38,8 @@ class notaFiscalProduto:
 class notaFiscal:
     def __init__(self, file):
         n = untangle.parse(file)
+    def __init__(self, file):
+        n = untangle.parse(file)
         self.id = n.nfeProc.NFe.infNFe['Id']
         self.versao = n.nfeProc.NFe.infNFe['versao']
         self.serie = n.nfeProc.NFe.infNFe.ide.serie.cdata
@@ -58,6 +60,7 @@ class notaFiscal:
             self.produtos.append(notaFiscalProduto(i))
         self.itens = len(self.produtos)
         self.quantidade = sum([x.quantidade for x in self.produtos])
+
         
     def toDataBase(self, db):
         conn = sqlite3.connect(db) # ou use :memory: para botá-lo na memória RAM
@@ -67,6 +70,8 @@ class notaFiscal:
         temp = c.fetchone()
         #print(temp)
         if temp == None:
+            
+            #carrega notas
             valuesTuple = (
                 
                 self.id,
@@ -75,6 +80,7 @@ class notaFiscal:
                 self.nota,
                 self.serieNota,
                 self.emissaoTimeStamp,
+                self.lancamentoTimeStamp,
                 self.natureza,
                 self.ICMS,
                 self.ICMSST,
@@ -94,6 +100,47 @@ class notaFiscal:
             #print(sqlString)
             c.execute(sqlString,valuesTuple)
             conn.commit()
+            
+            #carrega produtos das notas
+            
+            for i in self.produtos:
+                valuesTuple = (
+                    
+                    self.id,
+                    i.item,
+                    i.codigo,
+                    i.barras,
+                    i.descricao,
+                    i.quantidade,
+                    i.valorUnitarioSemImpostos,
+                    i.valorTotalSemImpostos,
+                    i.pedido,
+                    i.aliquotaIPI,
+                    i.IPI,
+                    i.aliquotaPIS,
+                    i.PIS,
+                    i.aliquotaCOFINS,
+                    i.COFINS,
+                    i.aliquotaICMS,
+                    i.ICMS,
+                    i.aliquotaICMSST,
+                    i.ICMSST,
+                    i.valorTotalComImpostos,
+                    
+
+                )
+        
+                temp = ["?" for x in valuesTuple]
+                sqlString = ','.join(temp)
+                sqlString = "INSERT INTO produtosNotas VALUES (" + sqlString + ")"
+                #print(valuesTuple)
+                #print(sqlString)
+                c.execute(sqlString,valuesTuple) 
+                conn.commit()
+            
+            
+            
+            
         conn.close()
         
         
