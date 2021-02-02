@@ -2,10 +2,8 @@
 
 #Imports
 import untangle
-import datetime as dt
 from datetime import datetime as dtm
 import os
-import pandas as pd
 import sqlite3
 
 
@@ -36,8 +34,6 @@ class notaFiscalProduto:
         self.valorTotalComImpostos = round(self.valorTotalSemImpostos + self.IPI + self.ICMSST, 2)
 
 class notaFiscal:
-    def __init__(self, file):
-        n = untangle.parse(file)
     def __init__(self, file):
         n = untangle.parse(file)
         self.id = n.nfeProc.NFe.infNFe['Id']
