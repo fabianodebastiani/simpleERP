@@ -1,15 +1,8 @@
-# -*- coding: utf-8 -*-
-
-import sqlite3
+import erp
 
 
-conn = sqlite3.connect('assistente.db')
-c = conn.cursor()
+diretorioVendas = 'C:/Users/fabia/OneDrive/SwarovskiCompartilhado/Vendas/'
 
-
-sqlString = 'SELECT SUM(valorDaNota) FROM notas WHERE natureza=?'
-
-c.execute(sqlString, ("RETORNO DE CONSERTO",))
-print(c.fetchall())
-
-conn.close()
+v = erp.listaDeVendas()
+v.carregaPasta(diretorioVendas)
+v.toDataBase('assistente.db')

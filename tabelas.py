@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 
 
 
@@ -54,9 +54,36 @@ produtosNotasJson = {'nome': 'produtosNotas', 'campos': [
 
 
 
+vendasJson = {'nome': 'vendas', 'campos': [
+    {'nome': 'serieNota', 'tipo': 'text'},
+    {'nome': 'serie', 'tipo': 'text'},
+    {'nome': 'nota', 'tipo': 'text'},
+    {'nome': 'data', 'tipo': 'integer'},
+    {'nome': 'cliente', 'tipo': 'text'},
+    {'nome': 'tipo', 'tipo': 'text'},
+    {'nome': 'vendedor', 'tipo': 'text'},
+    {'nome': 'desconto', 'tipo': 'real'},
+    {'nome': 'valor', 'tipo': 'real'}
+
+]}
 
 
-tabelasACriar = [notasJson, produtosNotasJson]
+
+produtosVendasJson = {'nome': 'produtosVendas', 'campos': [
+    {'nome': 'serieNota', 'tipo': 'text'},
+    {'nome': 'linx', 'tipo': 'text'},
+    {'nome': 'descricao', 'tipo': 'text'},
+    {'nome': 'quantidade', 'tipo': 'integer'},
+    {'nome': 'desconto', 'tipo': 'real'},
+    {'nome': 'valor', 'tipo': 'real'},
+
+
+]}
+
+
+
+
+tabelasACriar = [notasJson, produtosNotasJson, vendasJson, produtosVendasJson]
 
 
 
