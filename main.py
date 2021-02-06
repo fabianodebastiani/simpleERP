@@ -8,6 +8,10 @@ import erp
 
 
 
+init.inicializacao()
+
+
+
 
 
 diretorio = 'C:/Users/fabia/OneDrive/SwarovskiCompartilhado/Notas Fiscais'
