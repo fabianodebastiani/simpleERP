@@ -18,20 +18,24 @@ import tabelas as tb
 import dbFunctions as dbf
 
 
-# Arquivo da base de dados
-dataBase = 'assistente.db'
+
+def inicializacao():
 
 
-# Captura diretório de execução do aplicativo
-
-diretorioDeExecucao = os.getcwd()
-
-# Verifica ou cria arquivo de data base e fecha conexão
-
-conn = sqlite3.connect(dataBase) # ou use :memory: para botá-lo na memória RAM
-conn.close()
-
-# Para cada tabela da base de dados, verifica existencia ou cria
-
-for i in tb.tabelasACriar:
-    dbf.criaTabela(dataBase, i)
+    # Arquivo da base de dados
+    dataBase = 'assistente.db'
+    
+    
+    # Captura diretório de execução do aplicativo
+    
+    #diretorioDeExecucao = os.getcwd()
+    
+    # Verifica ou cria arquivo de data base e fecha conexão
+    
+    conn = sqlite3.connect(dataBase) # ou use :memory: para botá-lo na memória RAM
+    conn.close()
+    
+    # Para cada tabela da base de dados, verifica existencia ou cria
+    
+    for i in tb.tabelasACriar:
+        dbf.criaTabela(dataBase, i)
