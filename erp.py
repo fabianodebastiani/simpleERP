@@ -5,6 +5,8 @@ import untangle
 from datetime import datetime as dtm
 import os
 import sqlite3
+import datetime as dt
+import pandas as pd
 
 
 #Classes relacionadas a Notas em formato xml
@@ -141,7 +143,7 @@ class notaFiscal:
         
         
         
-def carregaPasta(diretorio, db):
+def carregaPastaDeNotas(diretorio, db):
     print('Carregando pasta de notas...')
     for root, dirs, files in os.walk(diretorio):
         for name in files:
@@ -154,34 +156,217 @@ def carregaPasta(diretorio, db):
         
         
         
+   
+#Classes relacionadas a Vendas
+
+class venda:
+    
+    def toDataBase(self, db):
+        conn = sqlite3.connect(db) # ou use :memory: para botá-lo na memória RAM
+        c = conn.cursor()
+        sqlString = "SELECT * FROM vendas WHERE serieNota=?"
+        c.execute(sqlString, (self.serieNota,))
+        temp = c.fetchone()
+        #print(temp)
+        if temp == None:
+            
+            #carrega notas
+            valuesTuple = (
+                
+                self.serieNota,
+                self.serie,
+                self.nota,
+                self.dataTimeStamp,
+                self.cliente,
+                self.tipo,
+                self.vendedor,
+                self.desconto,
+                self.valor,               
+
+            )
+            
+           
+    
+            temp = ["?" for x in valuesTuple]
+            sqlString = ','.join(temp)
+            sqlString = "INSERT INTO vendas VALUES (" + sqlString + ")"
+            #print(valuesTuple)
+            #print(sqlString)
+            c.execute(sqlString,valuesTuple)
+            conn.commit()
+            
+            #carrega produtos das notas
+            
+            for i in self.produtos:
+                valuesTuple = (
+                    
+                    self.serieNota,
+                    i.linx,
+                    i.descricao,
+                    i.quantidade,
+                    i.desconto,
+                    i.valor,
+
+
+                )
+                
+       
+                temp = ["?" for x in valuesTuple]
+                sqlString = ','.join(temp)
+                sqlString = "INSERT INTO produtosVendas VALUES (" + sqlString + ")"
+                #print(valuesTuple)
+                #print(sqlString)
+                c.execute(sqlString,valuesTuple) 
+                conn.commit()
+            
+            
+            
+            
+        conn.close()
+
+
+
+class itemVenda:
+    pass
+
+class listaDeVendas:
+    def __init__(self):
+        self.lista = []
+        self.dictSerieNota = {}
+        
+    def carregaArquivo(self, arquivo):
+        xl = pd.ExcelFile(arquivo)
+        df = xl.parse('FaturamentoVendedor')
 
         
+        for index, row in df.iterrows():
+            if '-' in str(row[0]):
+                if str(row[0])[:str(row[0]).find('-')].strip().isdigit():
+                    Vendedor = row[0][str(row[0]).find('-')+1:].strip().title()
+                    #print(Vendedor)
+            else:
+                if str(row[0])[2:3] == '/' and str(row[0])[5:6] == '/':
+                    Data = int(dtm.timestamp(dt.datetime(int(row[0][6:10]),int(row[0][3:5]),int(row[0][0:2]))))
+                    Serie = str(row[1])
+                    Nota = str(row[2])[:str(row[2]).find('/')-1]
+                    Cliente = str(row[3])[str(row[3]).find('-')+1:].title()
+                    Valor = float(str(row[5]).replace('.','').replace(',','.'))
+                    if str(row[7]).strip() != '-':
+                        DescontoNota = float(str(row[7]).replace('.','').replace(',','.'))
+                    else:
+                        DescontoNota = float(0)
+                    if Valor >= 0:
+                        Tipo = 'Venda'
+                    else:
+                        Tipo = 'Devolucao'
+                    
+                    novaVenda = venda()
+                    novaVenda.dataTimeStamp = Data
+                    novaVenda.serie = Serie
+                    novaVenda.nota = Nota
+                    novaVenda.serieNota = novaVenda.serie + '-' + novaVenda.nota
+                    novaVenda.tipo = Tipo
+                    novaVenda.cliente = Cliente 
+                    novaVenda.valor = Valor
+                    novaVenda.desconto = DescontoNota
+                    novaVenda.vendedor = Vendedor
+                    novaVenda.produtos = []
+                    self.lista.append(novaVenda)
+                    self.dictSerieNota[(novaVenda.serie, novaVenda.nota)] = novaVenda
+                else:
+                    if str(row[0]) == 'nan' and str(row[2]).replace('-','').isdigit():
+                        Codigo = str(row[2]).replace('-','')
+                        Descricao = str(row[3])
+                        Quantidade = int(row[4])
+                        ValorItem = float(str(row[5]).replace('.','').replace(',','.'))
+                        if str(row[7]).strip() != '-':
+                            DescontoItem = float(str(row[7]).replace('.','').replace(',','.'))
+                        else:
+                            DescontoItem = float(0)
+                        novoItem = itemVenda()
+                        novoItem.linx = Codigo
+                        novoItem.descricao = Descricao
+                        novoItem.quantidade = Quantidade
+                        novoItem.valor = ValorItem
+                        novoItem.desconto = DescontoItem
+                        self.lista[-1].produtos.append(novoItem)
         
-# def criaTabela(db, tabela):
-#     #Conecta a arquivo existente ou cria novo se não existir
-#     conn = sqlite3.connect(db) # ou use :memory: para botá-lo na memória RAM
-#     c = conn.cursor()
+    def carregaPasta(self, diretorio):
+        print('Carregando pasta de vendas...')
+        for root, dirs, files in os.walk(diretorio):
+            for name in files:
+                if name[-5:] == '.xlsx':
+                    path = os.path.join(root, name)
+                    #print(path)
+                    self.carregaArquivo(path)
+                    
+    def toDataBase(self, db):
+        conn = sqlite3.connect(db) # ou use :memory: para botá-lo na memória RAM
+        c = conn.cursor()
+        
+        for ven in self.lista:
+        
+        
+            sqlString = "SELECT * FROM vendas WHERE serieNota=?"
+            c.execute(sqlString, (ven.serieNota,))
+            temp = c.fetchone()
+            #print(temp)
+            if temp == None:
+                
+                #carrega notas
+                valuesTuple = (
+                    
+                    ven.serieNota,
+                    ven.serie,
+                    ven.nota,
+                    ven.dataTimeStamp,
+                    ven.cliente,
+                    ven.tipo,
+                    ven.vendedor,
+                    ven.desconto,
+                    ven.valor,               
     
-#     # Verifica se tabela já existe e retorna True or False na variável jaExiste
-#     c.execute("SELECT name FROM sqlite_master WHERE type='table'")
-#     temp = c.fetchall()
-#     if (tabela['nome'],) in temp:
-#         jaExiste = True
-#         #print("Tabela já existe")
-#     else:
-#         jaExiste = False
-#         #print("Tabela não existe")
+                )
+                
+               
         
-#     # Se tabela não existe, cria
-#     if jaExiste == False:
-#         nome = tabela['nome']
-#         string = ''
-#         for i in tabela['campos']:
-#             string = string + i['nome'] + ' ' + i['tipo'] + ', '
-#         fullstring = "CREATE TABLE " + nome + " (" + string[:-2] + ")"
-#         #print(fullstring)
-#         c.execute(fullstring)
-#         #print("Tabela foi criada")
+                temp = ["?" for x in valuesTuple]
+                sqlString = ','.join(temp)
+                sqlString = "INSERT INTO vendas VALUES (" + sqlString + ")"
+                #print(valuesTuple)
+                #print(sqlString)
+                c.execute(sqlString,valuesTuple)
+                conn.commit()
+                
+                #carrega produtos das notas
+                
+                for prod in ven.produtos:
+                    valuesTuple = (
+                        
+                        ven.serieNota,
+                        prod.linx,
+                        prod.descricao,
+                        prod.quantidade,
+                        prod.desconto,
+                        prod.valor,
+    
+    
+                    )
+                    
+           
+                    temp = ["?" for x in valuesTuple]
+                    sqlString = ','.join(temp)
+                    sqlString = "INSERT INTO produtosVendas VALUES (" + sqlString + ")"
+                    #print(valuesTuple)
+                    #print(sqlString)
+                    c.execute(sqlString,valuesTuple) 
+                    conn.commit()
+            
+            
+            
+            
+        conn.close()
         
-#     conn.close()        
+                
         
+

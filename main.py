@@ -12,7 +12,7 @@ import erp
 
 diretorio = 'C:/Users/fabia/OneDrive/SwarovskiCompartilhado/Notas Fiscais'
 
-erp.carregaPasta(diretorio, 'assistente.db')
+erp.carregaPastaDeNotas(diretorio, 'assistente.db')
 
 
 
